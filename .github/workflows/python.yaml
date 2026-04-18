@@ -113,7 +113,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: wheels-${{ matrix.platform }}-${{ matrix.target }}
-          path: dist
+          path: nod/dist
 
   sdist:
     name: Build sdist
@@ -131,7 +131,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: sdist
-          path: dist
+          path: nod/dist
 
   test:
     name: Test wheels (${{ matrix.os }})
@@ -159,10 +159,11 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           pattern: wheels-*
-          path: dist
+          path: nod/dist
           merge-multiple: true
       - name: Run tests
         shell: bash
+        working-directory: nod
         run: |
           pip install nod-rs --no-index --find-links dist --force-reinstall
           pip install pytest
@@ -181,15 +182,15 @@ jobs:
       - name: Download wheels
         uses: actions/download-artifact@v8
         with:
-          path: dist
+          path: nod/dist
           merge-multiple: true
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v4
         with:
-          subject-path: dist/*
+          subject-path: nod/dist/*
       - name: Publish to PyPI
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
         uses: PyO3/maturin-action@v1
         with:
           command: upload
-          args: --non-interactive --skip-existing dist/*
+          args: --non-interactive --skip-existing nod/dist/*
