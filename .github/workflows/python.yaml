@@ -86,6 +86,7 @@ jobs:
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
+          working-directory: nod
           target: ${{ matrix.target }}
           args: --release --out dist ${{ matrix.args }}
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
@@ -102,6 +103,7 @@ jobs:
       - name: Build free-threaded wheels
         uses: PyO3/maturin-action@v1
         with:
+          working-directory: nod
           target: ${{ matrix.target }}
           args: --release --out dist ${{ matrix.args }} -i python3.13t -i python3.14t
           sccache: ${{ !startsWith(github.ref, 'refs/tags/') }}
@@ -122,6 +124,7 @@ jobs:
       - name: Build sdist
         uses: PyO3/maturin-action@v1
         with:
+          working-directory: nod
           command: sdist
           args: --out dist
       - name: Upload sdist
